@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../SignalingServer.Core/SignalingServer.Core.csproj" />
+    <ProjectReference Include="../SignalingServer.Domain/SignalingServer.Domain.csproj" />
+    <ProjectReference Include="../SignalingServer.Infrastructure/SignalingServer.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../SignalingServer.Domain/SignalingServer.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
