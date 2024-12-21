@@ -1,0 +1,48 @@
+# .NET Core 相关
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# Visual Studio 相关
+.vs/
+.vscode/
+*_i.c
+*_p.c
+*.ncb
+*.sdf
+*.opensdf
+*.sln.docstates
+project.lock.json
+project.fragment.lock.json
+
+# Rider 相关
+.idea/
+*.sln.iml
+
+# 操作系统相关
+[Tt]humbs.db
+*.DS_Store
+
+# 发布文件夹
+[Pp]ublish/
+[Pp]ublished/
+*.[Pp]ublish.xml
+
+# NuGet
+*.nupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# 其他
+appsettings.Development.json
+launchSettings.json
