@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,12 @@
     <ProjectReference Include="../SignalingServer.Core/SignalingServer.Core.csproj" />
     <ProjectReference Include="../SignalingServer.Domain/SignalingServer.Domain.csproj" />
     <ProjectReference Include="../SignalingServer.Infrastructure/SignalingServer.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
 </Project>
