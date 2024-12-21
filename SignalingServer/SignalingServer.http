@@ -1,6 +1,0 @@
-@SignalingServer_HostAddress = http://localhost:5297
-
-GET {{SignalingServer_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
