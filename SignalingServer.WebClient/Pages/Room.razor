@@ -1,0 +1,76 @@
+﻿@page "/room/{RoomId}"
+@using SignalingServer.WebClient.Services
+@inject SignalingService SignalingService
+@inject WebRTCService WebRTCService
+@implements IAsyncDisposable
+
+<div class="video-container">
+    <div class="local-video">
+        <video id="localVideo" autoplay playsinline muted></video>
+    </div>
+    <div class="remote-videos">
+        @foreach (var peerId in _peers)
+        {
+            <div class="remote-video">
+                <video id="@($"video-{peerId}")" autoplay playsinline></video>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string RoomId { get; set; } = string.Empty;
+
+    private HashSet<string> _peers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await WebRTCService.InitializeAsync();
+        
+        SignalingService.OnUserJoined += HandleUserJoined;
+        SignalingService.OnUserLeft += HandleUserLeft;
+        SignalingService.OnReceiveOffer += HandleReceiveOffer;
+        SignalingService.OnReceiveAnswer += HandleReceiveAnswer;
+        SignalingService.OnReceiveIceCandidate += HandleReceiveIceCandidate;
+
+        await SignalingService.StartAsync();
+        await SignalingService.JoinRoomAsync(RoomId);
+
+        // 创建 Offer 并打印 ICE 信息
+        await WebRTCService.CreateOfferAsync("targetUserId");
+    }
+
+    private void HandleUserJoined(string connectionId)
+    {
+        _peers.Add(connectionId);
+        StateHasChanged();
+    }
+
+    private void HandleUserLeft(string connectionId)
+    {
+        _peers.Remove(connectionId);
+        StateHasChanged();
+    }
+
+    private void HandleReceiveOffer(string fromUserId, string offer)
+    {
+        _ = WebRTCService.HandleOfferAsync(fromUserId, offer);
+    }
+
+    private async void HandleReceiveAnswer(string fromUserId, string answer)
+    {
+        await WebRTCService.HandleAnswerAsync(fromUserId, answer);
+    }
+
+    private async void HandleReceiveIceCandidate(string fromUserId, string candidate)
+    {
+        await WebRTCService.HandleIceCandidateAsync(fromUserId, candidate);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await SignalingService.LeaveRoomAsync(RoomId);
+        await SignalingService.DisposeAsync();
+    }
+}
