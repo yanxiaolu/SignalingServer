@@ -36,15 +36,16 @@
 
         await SignalingService.StartAsync();
         await SignalingService.JoinRoomAsync(RoomId);
-
-        // 创建 Offer 并打印 ICE 信息
-        await WebRTCService.CreateOfferAsync("targetUserId");
     }
 
-    private void HandleUserJoined(string connectionId)
+    private async void HandleUserJoined(string newUserId)
     {
-        _peers.Add(connectionId);
+        _peers.Add(newUserId);
         StateHasChanged();
+        
+        // 已在房间的用户主动为新用户创建offer
+        var offer = await WebRTCService.CreateOfferAsync(newUserId);
+        await SignalingService.SendOfferAsync(RoomId, newUserId, offer);
     }
 
     private void HandleUserLeft(string connectionId)
@@ -53,9 +54,10 @@
         StateHasChanged();
     }
 
-    private void HandleReceiveOffer(string fromUserId, string offer)
+    private async void HandleReceiveOffer(string fromUserId, string offer)
     {
-        _ = WebRTCService.HandleOfferAsync(fromUserId, offer);
+        var answer = await WebRTCService.HandleOfferAsync(fromUserId, offer);
+        await SignalingService.SendAnswerAsync(RoomId, fromUserId, answer);
     }
 
     private async void HandleReceiveAnswer(string fromUserId, string answer)

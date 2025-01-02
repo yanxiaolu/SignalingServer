@@ -16,7 +16,9 @@ namespace SignalingServer.Infrastructure.Hubs
         {
             var room = await _roomService.CreateOrJoinRoom(roomId, Context.UserIdentifier, Context.ConnectionId);
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-            await Clients.Group(roomId).SendAsync("UserJoined", Context.ConnectionId);
+            
+            // 通知房间内的其他用户(除了新用户)有新用户加入
+            await Clients.OthersInGroup(roomId).SendAsync("UserJoined", Context.ConnectionId);
         }
 
         public async Task LeaveRoom(string roomId)

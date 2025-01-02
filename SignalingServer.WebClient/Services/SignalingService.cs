@@ -15,6 +15,8 @@ public class SignalingService : IAsyncDisposable
     public event Action<string, string>? OnReceiveOffer;
     public event Action<string, string>? OnReceiveAnswer;
     public event Action<string, string>? OnReceiveIceCandidate;
+    public event Action<string>? OnSendOfferToNewUser;
+
 
     public SignalingService(IConfiguration configuration, ILogger<SignalingService> logger)
     {
@@ -31,6 +33,8 @@ public class SignalingService : IAsyncDisposable
         _hubConnection.On<string, string>("ReceiveOffer", (fromUserId, offer) => OnReceiveOffer?.Invoke(fromUserId, offer));
         _hubConnection.On<string, string>("ReceiveAnswer", (fromUserId, answer) => OnReceiveAnswer?.Invoke(fromUserId, answer));
         _hubConnection.On<string, string>("ReceiveIceCandidate", (fromUserId, candidate) => OnReceiveIceCandidate?.Invoke(fromUserId, candidate));
+        _hubConnection.On<string>("SendOfferToNewUser", (newUserId) => OnSendOfferToNewUser?.Invoke(newUserId));
+
     }
 
     public async Task StartAsync()

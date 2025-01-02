@@ -115,47 +115,63 @@ code {
 
 .video-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     height: 100vh;
+    padding: 20px;
+    gap: 20px;
+    background-color: #1a1a1a;
 }
 
 .local-video {
-    width: 200px;
-    height: 150px;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 100;
+    flex: 0 0 25%;
+    height: calc(100vh - 40px);
+    background-color: #2d2d2d;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .local-video video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
     transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    -moz-transform: scaleX(-1);
 }
 
 .remote-videos {
+    flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
-    padding: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    height: calc(100vh - 40px);
+    overflow-y: auto;
 }
 
 .remote-video {
-    width: 100%;
     aspect-ratio: 16/9;
-    transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    -moz-transform: scaleX(-1);
+    background-color: #2d2d2d;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .remote-video video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
+    transform: scaleX(-1);
+}
+
+/* 适配移动设备 */
+@media (max-width: 768px) {
+    .video-container {
+        flex-direction: column;
+    }
+    
+    .local-video {
+        flex: 0 0 30vh;
+        height: auto;
+    }
+    
+    .remote-videos {
+        height: auto;
+    }
 }
