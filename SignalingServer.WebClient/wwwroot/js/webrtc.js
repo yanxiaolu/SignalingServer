@@ -2,15 +2,16 @@ class WebRTCManager {
     constructor() {
         this.localStream = null;
         this.peerConnections = new Map();
+        this.dotNetRef = null;
         this.configuration = {
             iceServers: [
-                { urls: 'stun:stun.cloudflare.com:3478' },
                 { urls: 'stun:stun.l.google.com:19302' }
             ]
         };
     }
 
-    async initialize() {
+    async initialize(dotNetRef) {
+        this.dotNetRef = dotNetRef;
         try {
             this.localStream = await navigator.mediaDevices.getUserMedia({
                 audio: true,
@@ -96,29 +97,19 @@ class WebRTCManager {
             peerConnection.addTrack(track, this.localStream);
         });
 
-        // 处理远程流
-        peerConnection.ontrack = (event) => {
-            const remoteVideo = document.querySelector(`#video-${userId}`);
-            if (remoteVideo && event.streams[0]) {
-                remoteVideo.srcObject = event.streams[0];
-            }
-        };
-
         // ICE候选处理
-        peerConnection.onicecandidate = (event) => {
-            if (event.candidate) {
-                // 通过DotNet调用信令服务器发送ICE候选
-                DotNet.invokeMethodAsync('SignalingServer.WebClient', 
-                    'SendIceCandidate', 
+        peerConnection.onicecandidate = async (event) => {
+            if (event.candidate && this.dotNetRef) {
+                await this.dotNetRef.invokeMethodAsync('SendIceCandidate', 
                     userId, 
                     JSON.stringify(event.candidate)
                 );
             }
         };
 
-        // 连接状态变化监控
+        // 连接状态监控
         peerConnection.onconnectionstatechange = () => {
-            console.log(`连接状态 (${userId}):`, peerConnection.connectionState);
+            console.log(`Connection state (${userId}):`, peerConnection.connectionState);
         };
 
         return peerConnection;
